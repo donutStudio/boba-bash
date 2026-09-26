@@ -11,11 +11,16 @@ engine.gravity.y = 1.5;
 
 let tungBody;
 
+const hitSound = new Audio("assets/hit.mp3");
+const tungSound = new Audio("assets/tung-tung-phonk.mp3");
+
 const wallSize = 450;
 
 function createWalls() {
     const w = window.innerWidth;
     const h = window.innerHeight;
+
+    tungSound.play();
 
     return [
         Bodies.rectangle(w / 2, h + wallSize / 2, w, wallSize, { isStatic: true }), // Floor
@@ -63,6 +68,8 @@ function startPhysics() {
 
         tungDiv.style.transform = `rotate(${tungBody.angle}rad)`;
 
+        tungSound.loop = true;
+
         requestAnimationFrame(update);
     }
 
@@ -102,7 +109,9 @@ let velocityX = 0;
 let velocityY = 0;
 
 tungDiv.addEventListener("pointerdown", (e) => {
-    if (!fallen) return;
+    if (!fallen) {
+        return;
+    }
 
     dragging = true;
 
@@ -119,6 +128,8 @@ tungDiv.addEventListener("pointerdown", (e) => {
     velocityY = 0;
 
     Body.setStatic(tungBody, true);
+    hitSound.currentTime = 0;
+    hitSound.play();
 });
 
 tungDiv.addEventListener("pointermove", (e) => {
